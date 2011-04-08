@@ -7,28 +7,29 @@ import java.util.Set;
 public class World {
 
 	private int xRadius = 800, yRadius = 600;
-	private Character player;
+	private Player player;
 	private Rectangle playArea;
 	private Set<Environment> environment = new HashSet<Environment>();
+	private Characters characters;
 
-	public World(Character player) {
+	public World(Player player) {
 		this.player = player;
-		checkerBoard();
+		characters = new Characters(this, 20);
 	}
 
-	// TODO
-	private void checkerBoard() {
-		for (int i = -xRadius; i < xRadius; i += 80) {
-			for (int j = -yRadius; j < yRadius; j += 80) {
-				environment.add(new Environment(new Rectangle(i, j, 80, 80)));
-			}
-		}
-	}
-
-	public World(Character player, int width, int height) {
+	public World(Player player, int width, int height, int density) {
 		this.player = player;
 		this.xRadius = width / 2;
 		this.yRadius = height / 2;
+		characters = new Characters(this, density);
+	}
+
+	public int getXRadius() {
+		return xRadius;
+	}
+
+	public int getYRadius() {
+		return yRadius;
 	}
 
 	public void addEnvironmentObject(Environment env) {
@@ -42,14 +43,17 @@ public class World {
 	public void draw(Graphics g) {
 		Rectangle box = g.getClipBounds();
 		int width = (int) box.getWidth(), height = (int) box.getHeight();
+		int shiftX = width / 2 - player.getX(), shiftY = height / 2 - player.getY();
 		int tX = player.getX() - width / 2;
 		int tY = player.getY() - height / 2;
 		playArea = new Rectangle(tX, tY, width, height);
 		player.cullLocation(xRadius, yRadius);
 		for (Environment env : environment) {
+			// Only bother drawing things that fit in the window.
 			if (env != null && env.getLocation().intersects(playArea))
-				env.draw(g, width/2 - player.getX(), height/2 - player.getY());
+				env.draw(g, shiftX, shiftY);
 		}
+		characters.draw(g, shiftX, shiftY);
 	}
 
 }

@@ -1,16 +1,12 @@
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class Character {
 
 	// ==============================================================PROPERTIES
 
-	// Specification of possible characteristics
+	// Possible characteristics
 	enum Gender {
 		MALE,
 		FEMALE
@@ -37,15 +33,17 @@ public class Character {
 	}
 
 	// TODO: Figure out how to use this.
-	private Map<Virus, Integer> viruses = new HashMap<Virus, Integer>();
+	// private Map<Virus, Integer> viruses = new HashMap<Virus, Integer>();
 
 	// Maximum attribute values
-	private static final int MAX_AGGRESSION = 100;
-	private static final int MAX_ENERGY = 100;
-	private static final int MAX_ENTHUSIASM = 100;
-	private static final int MAX_SIZE = 100;
-	private static final int MAX_SKILL = 100;
-	private static final int MAX_SPEED = 100;
+	static final int MAX_AGGRESSION = 100;
+	static final int MAX_ENERGY = 100;
+	static final int MAX_ENTHUSIASM = 100;
+	static final int MAX_SIZE = 100;
+	static final int MAX_SKILL = 100;
+	static final int MAX_SPEED = 100;
+
+	public static final int SIZE = 12;
 
 	// Attributes
 	private String name;
@@ -55,7 +53,7 @@ public class Character {
 	private int aggression;
 	private int energy;
 	private int enthusiasm;
-	private int size;
+	private int presence;
 	private int skill;
 	private int speed;
 
@@ -67,10 +65,12 @@ public class Character {
 			Gender gender,
 			Type type,
 			Virus virus,
+			int x,
+			int y,
 			int aggression,
 			int energy,
 			int enthusiasm,
-			int size,
+			int presence,
 			int skill,
 			int speed
 			) {
@@ -78,10 +78,12 @@ public class Character {
 		this.gender = gender;
 		this.type = type;
 		this.virus = virus;
+		this.x = x;
+		this.y = y;
 		this.aggression = aggression;
 		this.energy = energy;
 		this.enthusiasm = enthusiasm;
-		this.size = size;
+		this.presence = presence;
 		this.skill = skill;
 		this.speed = speed;
 	}
@@ -155,18 +157,18 @@ public class Character {
 		return orig == enthusiasm;
 	}
 
+	public int getPresence() {
+		return presence;
+	}
+
+	public boolean changePresence(int delta) {
+		int orig = presence;
+		presence = change(orig, delta, MAX_SIZE);
+		return orig == presence;
+	}
+
 	public int getSkill() {
 		return skill;
-	}
-
-	public int getSize() {
-		return size;
-	}
-
-	public boolean changeSize(int delta) {
-		int orig = size;
-		size = change(orig, delta, MAX_SIZE);
-		return orig == size;
 	}
 
 	public boolean changeSkill(int delta) {
@@ -255,25 +257,9 @@ public class Character {
 
 	// =================================================================ACTIONS
 
-	private long lastKeyResponse = 0;
-	public void respondToKey(KeyEvent e) {
-		// TODO: Don't move outside world boundaries
-		long time = System.currentTimeMillis();
-		if (time - lastKeyResponse > (MAX_SPEED - speed + 1) * 0.5) {
-			lastKeyResponse = time;
-			if (e.getKeyCode() == KeyEvent.VK_UP) {
-				y -= size/2;
-			}
-			else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-				y += size/2;
-			}
-			else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-				x += size/2;
-			}
-			else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-				x -= size/2;
-			}
-		}
+	public void move(int xAmount, int yAmount) {
+		x += xAmount;
+		y += yAmount;
 	}
 
 	public void collaborate(Character c) {
@@ -292,15 +278,12 @@ public class Character {
 		// TODO: STUB
 	}
 
-	public void draw(Graphics g) {
+	public void draw(Graphics g, int shiftX, int shiftY) {
 		// TODO: STUB
-		Rectangle box = g.getClipBounds();
-		int tX = (int) (box.getWidth() / 2) - 2*size;
-		int tY = (int) (box.getHeight() / 2) - 2*size;
+		g.setColor(Color.RED);
+		g.fillOval(x + shiftX, y + shiftY, 4*SIZE, 4*SIZE);
 		g.setColor(Color.BLACK);
-		g.drawOval(tX, tY, 4*size, 4*size);
-		g.setColor(Color.BLUE);
-		g.fillOval(tX, tY, 4*size, 4*size);
+		g.drawOval(x + shiftX, y + shiftY, 4*SIZE, 4*SIZE);
 	}
 
 }

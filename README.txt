@@ -12,12 +12,7 @@ types of items:
 - book (increases skill)
 - other things that increase influence only for certain types of people
 
-types of environments
-- short grass (equal for everyone)
-- tall grass (better for adventurer)
-- indoors (better for marketer, entrepreneur
-- concrete (better for street)
-- auditorium (better for artist, politician)
-- snow (worse for everyone)
-- store (can buy/sell things)
-- water (can't enter)
+eventually I want to have the ability to walk through a door or up stairs and be teleported to a different World
+need to create a level editor or else have each one automatically generated (or both)
+need to be able to save levels/games
+when you influence everyone in a world you should either be put in a new, larger world, or your current world should expand
